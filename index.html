@@ -44,8 +44,8 @@
             function animate() {
                requestAnimationFrame(animate);
                // Change the 1.0 to 0.3
-               player.position.x += moveX * 0.3;
-               player.position.z += moveZ * 0.3;
+               player.position.x += moveX * 0.1;
+               player.position.z += moveZ * 0.1;
 
                camera.position.set(player.position.x, player.position.y + 20, player.position.z + 40);
                camera.lookAt(player.position);
