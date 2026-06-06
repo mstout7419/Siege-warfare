@@ -41,9 +41,11 @@
             scene.add(castle);
 
             // Resource Node (Blue)
-            resource = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 4), new THREE.MeshBasicMaterial({ color: 0x0000ff }));
-            resource.position.set(10, 2, 10);
+            // Resource Node (Blue) - Placed directly in front of start
+            resource = new THREE.Mesh(new THREE.BoxGeometry(4, 8, 4), new THREE.MeshBasicMaterial({ color: 0x0000ff }));
+            resource.position.set(0, 4, 10);
             scene.add(resource);
+
 
             animate();
         }
