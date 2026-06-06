@@ -41,17 +41,18 @@
             castle.position.set(30, 5, 30);
             scene.add(castle);
 
-            // Create 5 Resource Nodes in a loop
-            for (let i = 0; i < 5; i++) {
+            // Create 8 Resource Nodes in a loop
+            // This is the ONLY resource code you need now!
+            for (let i = 0; i < 8; i++) {
                 let node = new THREE.Mesh(new THREE.BoxGeometry(4, 8, 4), new THREE.MeshBasicMaterial({ color: 0x0000ff }));
-                // Give them random positions
                 node.position.set(Math.random() * 60 - 30, 4, Math.random() * 60 - 30);
                 scene.add(node);
-                resources.push(node); // Add to our list
+                resources.push(node);
             }
 
             animate();
         }
+
 
         function animate() {
             requestAnimationFrame(animate);
