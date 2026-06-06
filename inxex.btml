@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siege Visual Prototype</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; touch-action: none; }
+    </style>
+</head>
+<body>
+    <script>
+        let scene, camera, renderer, player;
+
+        function init() {
+            scene = new THREE.Scene();
+            // Gradient Sky effect
+            scene.background = new THREE.Color(0x87ceeb);
+            scene.fog = new THREE.Fog(0x87ceeb, 10, 150);
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true; // Enable shadows for realism
+            document.body.appendChild(renderer.domElement);
+
+            // Detailed Lighting
+            const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambient);
+            const sun = new THREE.DirectionalLight(0xffffff, 0.8);
+            sun.position.set(20, 50, 20);
+            sun.castShadow = true;
+            scene.add(sun);
+
+            // Ground with texture color
+            const ground = new THREE.Mesh(
+                new THREE.PlaneGeometry(500, 500), 
+                new THREE.MeshStandardMaterial({ color: 0x4a7c59, roughness: 0.8 })
+            );
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            // Castle Marker: More "Game Realistic" aesthetic
+            const castle = new THREE.Group();
+            const base = new THREE.Mesh(
+                new THREE.BoxGeometry(10, 5, 10), 
+                new THREE.MeshStandardMaterial({ color: 0x8b8589, roughness: 0.5 })
+            );
+            const tower = new THREE.Mesh(
+                new THREE.CylinderGeometry(3, 3, 10), 
+                new THREE.MeshStandardMaterial({ color: 0x6d6a6e, roughness: 0.5 })
+            );
+            tower.position.y = 7;
+            castle.add(base, tower);
+            castle.position.set(50, 2.5, 50);
+            castle.castShadow = true;
+            scene.add(castle);
+
+            camera.position.set(0, 20, 30);
+            camera.lookAt(0,0,0);
+            renderer.render(scene, camera);
+        }
+        window.onload = init;
+    </script>
+</body>
+</html>
