@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siege World Fixed</title>
+    <title>Siege World Balanced</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         body { margin: 0; overflow: hidden; background: #87ceeb; touch-action: none; }
@@ -43,7 +43,6 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            // Apply movement
             player.position.x += moveX;
             player.position.z += moveZ;
 
@@ -54,12 +53,11 @@
 
         const joy = document.getElementById('joystick');
         joy.addEventListener('touchmove', (e) => {
-            // Get touch position relative to the center of the joystick
             const rect = joy.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            moveX = (e.touches[0].clientX - centerX) / 20;
-            moveZ = (e.touches[0].clientY - centerY) / 20;
+            // We divide by 20 to keep the speed manageable
+            // We use the same divisor for X and Z to ensure balanced speed
+            moveX = (e.touches[0].clientX - (rect.left + 50)) / 20;
+            moveZ = (e.touches[0].clientY - (rect.top + 50)) / 20;
         }, {passive: false});
 
         joy.addEventListener('touchend', () => { moveX = 0; moveZ = 0; });
