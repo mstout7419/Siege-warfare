@@ -39,18 +39,19 @@
             scene.add(castle);
 
             animate();
-        }
+           }
 
-        function animate() {
-            requestAnimationFrame(animate);
-            // Unified speed multiplier (1.0 for both)
-            player.position.x += moveX * 1.0;
-            player.position.z += moveZ * 1.0;
+            function animate() {
+               requestAnimationFrame(animate);
+               // Change the 1.0 to 0.3
+               player.position.x += moveX * 0.3;
+               player.position.z += moveZ * 0.3;
 
-            camera.position.set(player.position.x, player.position.y + 20, player.position.z + 40);
-            camera.lookAt(player.position);
-            renderer.render(scene, camera);
-        }
+               camera.position.set(player.position.x, player.position.y + 20, player.position.z + 40);
+               camera.lookAt(player.position);
+               renderer.render(scene, camera);
+           }
+
 
         const joy = document.getElementById('joystick');
         joy.addEventListener('touchmove', (e) => {
