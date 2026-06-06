@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siege World Relative Movement</title>
+    <title>Siege World Locked Movement</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         body { margin: 0; overflow: hidden; touch-action: none; background: #87ceeb; }
@@ -52,12 +52,11 @@
             let oldX = player.position.x;
             let oldZ = player.position.z;
 
-            // Camera-Relative Movement using Vectors
-            let forward = new THREE.Vector3(Math.sin(cameraAngle), 0, Math.cos(cameraAngle));
-            let right = new THREE.Vector3(Math.cos(cameraAngle), 0, -Math.sin(cameraAngle));
-
-            player.position.x += (forward.x * -moveZ + right.x * moveX) * 0.5;
-            player.position.z += (forward.z * -moveZ + right.z * moveX) * 0.5;
+            // LOCKED WORLD MOVEMENT:
+            // "Up" on the joystick always moves you North on the map, 
+            // regardless of camera rotation.
+            player.position.x += moveX * 0.25;
+            player.position.z += moveZ * 0.25;
 
             // Collision check
             if (player.position.distanceTo(castle.position) < 8) { player.position.x = oldX; player.position.z = oldZ; }
