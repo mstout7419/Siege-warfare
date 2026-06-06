@@ -66,7 +66,7 @@
             }
 
             // Collision Check: Resource (Distance < 5)
-            if (player.position.distanceTo(resource.position) <  t) {
+            if (player.position.distanceTo(resource.position) <  5) {
                 player.position.x = oldX;
                 player.position.z = oldZ;
                 resource.material.color.set(0xff0000); // Turn red
