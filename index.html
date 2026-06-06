@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siege World Collisions</title>
+    <title>Siege World Expanded</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         body { margin: 0; overflow: hidden; touch-action: none; }
@@ -13,7 +13,8 @@
 <body>
     <div id="joystick"></div>
     <script>
-        let scene, camera, renderer, player, castle, resource;
+        let scene, camera, renderer, player, castle;
+        let resources = []; // List to hold our resources
         let moveX = 0, moveZ = 0;
 
         function init() {
@@ -40,10 +41,14 @@
             castle.position.set(30, 5, 30);
             scene.add(castle);
 
-            // Resource
-            resource = new THREE.Mesh(new THREE.BoxGeometry(4, 8, 4), new THREE.MeshBasicMaterial({ color: 0x0000ff }));
-            resource.position.set(0, 4, 10);
-            scene.add(resource);
+            // Create 5 Resource Nodes in a loop
+            for (let i = 0; i < 5; i++) {
+                let node = new THREE.Mesh(new THREE.BoxGeometry(4, 8, 4), new THREE.MeshBasicMaterial({ color: 0x0000ff }));
+                // Give them random positions
+                node.position.set(Math.random() * 60 - 30, 4, Math.random() * 60 - 30);
+                scene.add(node);
+                resources.push(node); // Add to our list
+            }
 
             animate();
         }
@@ -51,28 +56,28 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            // Save old position in case we hit something
             let oldX = player.position.x;
             let oldZ = player.position.z;
 
-            // Apply movement
             player.position.x += moveX * 0.1;
             player.position.z += moveZ * 0.1;
 
-            // Collision Check: Castle (Distance < 8)
+            // Collision: Castle
             if (player.position.distanceTo(castle.position) < 8) {
                 player.position.x = oldX;
                 player.position.z = oldZ;
             }
 
-            // Collision Check: Resource (Distance < 5)
-            if (player.position.distanceTo(resource.position) <  5) {
-                player.position.x = oldX;
-                player.position.z = oldZ;
-                resource.material.color.set(0xff0000); // Turn red
-            } else {
-                resource.material.color.set(0x0000ff); // Turn blue
-            }
+            // Collision: Check ALL Resources in the list
+            resources.forEach(node => {
+                if (player.position.distanceTo(node.position) < 7) {
+                    player.position.x = oldX;
+                    player.position.z = oldZ;
+                    node.material.color.set(0xff0000); // Turns red when close
+                } else {
+                    node.material.color.set(0x0000ff); // Back to blue
+                }
+            });
 
             camera.position.set(player.position.x, player.position.y + 20, player.position.z + 40);
             camera.lookAt(player.position);
