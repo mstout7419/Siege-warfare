@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siege World Complete Controls</title>
+    <title>Siege World Fixed Controls</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         body { margin: 0; overflow: hidden; touch-action: none; background: #87ceeb; }
@@ -52,15 +52,21 @@
             let oldX = player.position.x;
             let oldZ = player.position.z;
 
-            player.position.x += moveX * 0.1;
-            player.position.z += moveZ * 0.1;
+            // Camera-Relative Movement Math
+            let moveVectorX = (moveX * Math.cos(cameraAngle)) + (moveZ * Math.sin(cameraAngle));
+            let moveVectorZ = (moveZ * Math.cos(cameraAngle)) - (moveX * Math.sin(cameraAngle));
+
+            player.position.x += moveVectorX * 0.2;
+            player.position.z += moveVectorZ * 0.2;
 
             if (player.position.distanceTo(castle.position) < 8) { player.position.x = oldX; player.position.z = oldZ; }
             resources.forEach(node => {
                 if (player.position.distanceTo(node.position) < 7) {
                     player.position.x = oldX; player.position.z = oldZ;
                     node.material.color.set(0xff0000);
-                } else { node.material.color.set(0x0000ff); }
+                } else { 
+                    node.material.color.set(0x0000ff); 
+                }
             });
 
             let camX = player.position.x + Math.sin(cameraAngle) * 40;
@@ -70,7 +76,6 @@
             renderer.render(scene, camera);
         }
 
-        // Multi-touch handling
         window.addEventListener('touchmove', (e) => {
             moveX = 0; moveZ = 0;
             for (let i = 0; i < e.touches.length; i++) {
