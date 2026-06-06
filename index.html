@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siege World Twin-Stick</title>
+    <title>Siege World Smooth Camera</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         body { margin: 0; overflow: hidden; touch-action: none; background: #87ceeb; }
-        .joystick { position: absolute; bottom: 50px; width: 100px; height: 100px; background: rgba(255,255,255,0.3); border-radius: 50%; border: 4px solid white; }
-        #moveJoy { left: 50px; }
-        #camJoy { right: 50px; }
+        #moveJoy { position: absolute; bottom: 50px; left: 50px; width: 100px; height: 100px; background: rgba(255,255,255,0.3); border-radius: 50%; border: 4px solid white; }
     </style>
 </head>
 <body>
-    <div id="moveJoy" class="joystick"></div>
-    <div id="camJoy" class="joystick"></div>
+    <div id="moveJoy"></div>
     <script>
         let scene, camera, renderer, player, castle;
         let resources = [], moveX = 0, moveZ = 0, cameraAngle = 0;
+        let lastTouchX = 0;
 
         function init() {
             scene = new THREE.Scene();
@@ -27,6 +25,7 @@
             document.body.appendChild(renderer.domElement);
             scene.add(new THREE.AmbientLight(0xffffff, 1));
             
+            // Floor & Objects
             const floor = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshBasicMaterial({ color: 0x2d5a27 }));
             floor.rotation.x = -Math.PI / 2;
             scene.add(floor);
@@ -53,11 +52,10 @@
             let oldX = player.position.x;
             let oldZ = player.position.z;
 
-            // Move based on stick input
             player.position.x += moveX * 0.1;
             player.position.z += moveZ * 0.1;
 
-            // Collisions
+            // Collision logic
             if (player.position.distanceTo(castle.position) < 8) { player.position.x = oldX; player.position.z = oldZ; }
             resources.forEach(node => {
                 if (player.position.distanceTo(node.position) < 7) {
@@ -66,7 +64,7 @@
                 } else { node.material.color.set(0x0000ff); }
             });
 
-            // Camera Orbit Logic
+            // Camera follows player with rotation
             let camX = player.position.x + Math.sin(cameraAngle) * 40;
             let camZ = player.position.z + Math.cos(cameraAngle) * 40;
             camera.position.set(camX, player.position.y + 20, camZ);
@@ -74,7 +72,7 @@
             renderer.render(scene, camera);
         }
 
-        // Joystick Event Listeners
+        // Left Joystick (Movement)
         const moveJoy = document.getElementById('moveJoy');
         moveJoy.addEventListener('touchmove', (e) => {
             const rect = moveJoy.getBoundingClientRect();
@@ -83,10 +81,16 @@
         }, {passive: false});
         moveJoy.addEventListener('touchend', () => { moveX = 0; moveZ = 0; });
 
-        const camJoy = document.getElementById('camJoy');
-        camJoy.addEventListener('touchmove', (e) => {
-            cameraAngle += 0.05; // Spin right
+        // Right side of screen (Camera rotation)
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches[0].clientX > window.innerWidth / 2) {
+                let delta = e.touches[0].clientX - lastTouchX;
+                cameraAngle += delta * 0.01;
+            }
+            lastTouchX = e.touches[0].clientX;
         }, {passive: false});
+        
+        window.addEventListener('touchstart', (e) => { lastTouchX = e.touches[0].clientX; });
 
         window.onload = init;
     </script>
