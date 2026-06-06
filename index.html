@@ -59,7 +59,7 @@
             player.position.x += moveX * 0.1;
             player.position.z += moveZ * 0.1;
 
-            // Collision Check: Castle (Distance < 10)
+            // Collision Check: Castle (Distance < 8)
             if (player.position.distanceTo(castle.position) < 8) {
                 player.position.x = oldX;
                 player.position.z = oldZ;
