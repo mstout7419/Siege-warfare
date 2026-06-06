@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siege World Fixed Controls</title>
+    <title>Siege World Relative Movement</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         body { margin: 0; overflow: hidden; touch-action: none; background: #87ceeb; }
@@ -52,13 +52,14 @@
             let oldX = player.position.x;
             let oldZ = player.position.z;
 
-            // Camera-Relative Movement Math
-            let moveVectorX = (moveX * Math.cos(cameraAngle)) + (moveZ * Math.sin(cameraAngle));
-            let moveVectorZ = (moveZ * Math.cos(cameraAngle)) - (moveX * Math.sin(cameraAngle));
+            // Camera-Relative Movement using Vectors
+            let forward = new THREE.Vector3(Math.sin(cameraAngle), 0, Math.cos(cameraAngle));
+            let right = new THREE.Vector3(Math.cos(cameraAngle), 0, -Math.sin(cameraAngle));
 
-            player.position.x += moveVectorX * 0.2;
-            player.position.z += moveVectorZ * 0.2;
+            player.position.x += (forward.x * -moveZ + right.x * moveX) * 0.5;
+            player.position.z += (forward.z * -moveZ + right.z * moveX) * 0.5;
 
+            // Collision check
             if (player.position.distanceTo(castle.position) < 8) { player.position.x = oldX; player.position.z = oldZ; }
             resources.forEach(node => {
                 if (player.position.distanceTo(node.position) < 7) {
@@ -69,6 +70,7 @@
                 }
             });
 
+            // Camera Orbit
             let camX = player.position.x + Math.sin(cameraAngle) * 40;
             let camZ = player.position.z + Math.cos(cameraAngle) * 40;
             camera.position.set(camX, player.position.y + 20, camZ);
